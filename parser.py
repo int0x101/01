@@ -197,7 +197,7 @@ def p_expr_group(p):
 
 def p_expr_access(p):
     """expr : expr DOT expr"""
-    P[0] = ("access", p[1], p[3])
+    p[0] = ("access", p[1], p[3])
 
 
 def p_expr_integer(p):
