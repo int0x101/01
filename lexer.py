@@ -5,9 +5,8 @@ keywords = {
     "bool": "BOOL",
     "int": "INT",
     "double": "DOUBLE",
-    "str": "STRING",
+    "str": "STR",
     "enum": "ENUM",
-
     "return": "RETURN",
     "when": "WHEN",
     "else": "ELSE",
@@ -25,8 +24,13 @@ tokens = (
     "INTEGER",
     "BOOLEAN",
     "ID",
-
-    "EQUAL",
+    "EQUALS",
+    "PLUS_EQUALS",
+    "MINUS_EQUALS",
+    "STAR_EQUALS",
+    "SLASH_EQUALS",
+    "MOD_EQUALS",
+    "DOUBLE_STAR_EQUALS",
     "EQ",
     "NEQ",
     "LT",
@@ -41,12 +45,30 @@ tokens = (
     "RBRACKET",
     "DOT",
     "COMMA",
+    "PLUS",
+    "DOUBLE_PLUS",
+    "DOUBLE_MINUS",
+    "MINUS",
     "SLASH",
     "STAR",
-    "COLON"
+    "MOD",
+    "DOUBLE_STAR",
+    "DOUBLE_VBAR",
+    "DOUBLE_AMP",
+    "COLON",
+    "AT",
+    "EXCLAMATION",
+    "QUESTION",
+    "ARROW",
 ) + tuple(keywords.values())
 
-t_EQUAL = r"="
+t_EQUALS = r"="
+t_PLUS_EQUALS = r"\+="
+t_MINUS_EQUALS = r"-="
+t_STAR_EQUALS = r"\*="
+t_SLASH_EQUALS = r"/="
+t_MOD_EQUALS = r"%="
+t_DOUBLE_STAR_EQUALS = r"\*\*="
 
 t_EQ = r"=="
 t_NEQ = r"!="
@@ -66,8 +88,22 @@ t_COMMA = r","
 t_SLASH = r"/"
 t_STAR = r"\*"
 t_COLON = r":"
+t_AT = r"@"
+t_EXCLAMATION = r"!"
+t_QUESTION = r"\?"
+t_ARROW = r"=>"
+
+t_PLUS = r"\+"
+t_MINUS = r"-"
+t_DOUBLE_PLUS = r"\+\+"
+t_DOUBLE_MINUS = r"--"
+t_MOD = r"%"
+t_DOUBLE_STAR = r"\*\*"
+t_DOUBLE_VBAR = r"\|\|"
+t_DOUBLE_AMP = r"&&"
 
 indentation_stack = [0]
+
 
 def t_NEWLINE(t):
     r"\n+"
@@ -75,9 +111,11 @@ def t_NEWLINE(t):
     t.lexer.linestart = t.lexer.lexpos
     return t
 
+
 def t_DOUBLEL(t):
     r"\d+\.\d+"
     return t
+
 
 def t_STRING(t):
     r'"[^"]*"'
@@ -89,14 +127,17 @@ def t_INTEGER(t):
     r"\d+"
     return t
 
+
 def t_BOOLEAN(t):
     r"true|false"
     return t
+
 
 def t_ID(t):
     r"[a-zA-Z_][a-zA-Z0-9_]*"
     t.type = keywords.get(t.value, "ID")
     return t
+
 
 def t_whitespaces(t):
     r"(?<=\n)[ \t]+"
@@ -114,6 +155,7 @@ def t_whitespaces(t):
         return t
     return None
 
+
 def t_skip(t):
     r"[ \t]+"
     pass
@@ -124,6 +166,7 @@ def t_error(t):
         "Illegal character '%s' on line %d, column %d"
         % (t.value[0], t.lexer.lineno, t.lexer.lexpos - t.lexer.linestart + 1)
     )
+
 
 def sanitize(data):
     multiple_newlines_regex = r"\n+"
