@@ -9,7 +9,7 @@ keywords = {
     "enum": "ENUM",
     "return": "RETURN",
     "when": "WHEN",
-    "else": "ELSE",
+    "otherwise": "OTHERWISE",
     "pass": "PASS",
     "class": "CLASS",
     "void": "VOID",
